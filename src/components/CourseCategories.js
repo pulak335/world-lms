@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import Image from 'next/image';
 
 export default function CourseCategories() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -106,10 +107,12 @@ export default function CourseCategories() {
                       >
                         {/* Category Image */}
                         <div className="mb-6">
-                          <img
+                          <Image
                             src={category.image}
                             alt={category.title}
                             className="w-full h-48 object-cover rounded-xl"
+                            width={400}
+                            height={400}
                           />
                         </div>
                         

@@ -19,6 +19,7 @@ import {
   selectExpandedFilters 
 } from '../../store/slices/ui-slice';
 import { addToCart } from '../../store/slices/cart-slice';
+import Image from 'next/image';
 
 export default function CoursesPage() {
   const dispatch = useDispatch();
@@ -308,10 +309,12 @@ export default function CoursesPage() {
                 <div key={course.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                   {/* Course Image */}
                   <div className="relative h-48 bg-gray-200">
-                    <img
+                    <Image
                       src={course.image}
                       alt={course.title}
                       className="w-full h-full object-cover"
+                      width={400}
+                      height={400}
                       onError={(e) => {
                         e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEwMCIgcj0iMzAiIGZpbGw9IiNEMUQ1REIiLz4KPHBhdGggZD0iTTEzNSAxMDBMMTQ1IDExMEwxNjUgOTAiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+';
                       }}

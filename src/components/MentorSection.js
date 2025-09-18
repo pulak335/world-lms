@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { FaCheckCircle } from 'react-icons/fa';
 
 export default function MentorSection() {
@@ -9,10 +10,12 @@ export default function MentorSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Image */}
           <div className="relative">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
               alt="Group of people collaborating around a table"
               className="rounded-lg shadow-lg w-full h-auto object-cover"
+              width={800}
+              height={800}
             />
           </div>
 

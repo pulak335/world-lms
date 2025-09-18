@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FaSearch, FaStar, FaChevronLeft, FaChevronRight, FaUser, FaGraduationCap, FaBookOpen, FaUsers, FaAward } from 'react-icons/fa';
+import Image from 'next/image';
 
 export default function InstructorsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -196,7 +197,7 @@ export default function InstructorsPage() {
       setFilteredInstructors(filtered);
     }
     setCurrentPage(1); // Reset to first page when searching
-  }, [searchQuery]);
+  }, [searchQuery, instructors]);
 
   // Calculate pagination
   const totalInstructors = filteredInstructors.length;
@@ -304,10 +305,12 @@ export default function InstructorsPage() {
                   {/* Profile Image */}
                   <div className="text-center mb-4">
                     <div className="relative inline-block">
-                      <img
+                      <Image
                         src={instructor.profileImage}
                         alt={instructor.name}
                         className="w-24 h-24 rounded-full border-4 border-violet-500 mx-auto object-cover"
+                        width={400}
+                        height={400}
                       />
                       <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
                         <FaUser className="w-3 h-3 text-white" />

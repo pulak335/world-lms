@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { FaStar, FaRegClock, FaArrowRight } from 'react-icons/fa';
 
 export default function FeaturedCourses() {
@@ -74,10 +75,12 @@ export default function FeaturedCourses() {
             >
               {/* Course Image */}
               <div className="relative h-48 w-full overflow-hidden">
-                <img
+                <Image
                   src={course.image}
                   alt={course.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  width={400}
+                  height={400}
                 />
               </div>
               
@@ -120,10 +123,12 @@ export default function FeaturedCourses() {
                 {/* Instructor */}
                 <div className="flex items-center space-x-3">
                   <div className="relative w-10 h-10 rounded-full overflow-hidden">
-                    <img
+                    <Image
                       src={course.instructorAvatar}
                       alt="Instructor"
                       className="w-full h-full object-cover"
+                      width={40}
+                      height={40}
                     />
                   </div>
                   <span className="text-gray-700 text-sm font-medium">

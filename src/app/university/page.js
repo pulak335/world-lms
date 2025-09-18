@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { FaGraduationCap, FaAward, FaUsers, FaBookOpen, FaGlobe, FaStar, FaCheckCircle, FaArrowRight, FaCalendar, FaMapMarkerAlt, FaPhone, FaEnvelope, FaFacebook, FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import Image from 'next/image';
 
 export default function UniversityPage() {
   const [activeTab, setActiveTab] = useState('programs');
@@ -386,10 +387,12 @@ export default function UniversityPage() {
                 {faculty.map((member) => (
                   <div key={member.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
                     <div className="h-48 bg-gray-200 relative">
-                      <img
+                      <Image
                         src={member.image}
                         alt={member.name}
                         className="w-full h-full object-cover"
+                        width={400}
+                        height={400}
                         onError={(e) => {
                           e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iNDAiIGZpbGw9IiNEMUQ1REIiLz4KPHBhdGggZD0iTTgwIDEwMEwxMDAgMTIwTDEyMCAxMDAiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+';
                         }}
@@ -484,7 +487,7 @@ export default function UniversityPage() {
                       <ul className="space-y-2">
                         <li className="flex items-center space-x-3">
                           <FaCheckCircle className="w-5 h-5 text-green-500" />
-                          <span className="text-gray-700">Bachelor's degree from accredited institution</span>
+                          <span className="text-gray-700">Bachelor&apos;s degree from accredited institution</span>
                         </li>
                         <li className="flex items-center space-x-3">
                           <FaCheckCircle className="w-5 h-5 text-green-500" />

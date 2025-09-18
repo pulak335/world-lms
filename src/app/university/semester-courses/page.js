@@ -9,6 +9,120 @@ export default function SemesterCoursesPage() {
   const [activeTab, setActiveTab] = useState('semester'); // 'semester' or 'open-credit'
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [selectedSemesterForCredit, setSelectedSemesterForCredit] = useState(1);
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
+  const [openCreditStep, setOpenCreditStep] = useState('department'); // 'department', 'semester', 'subjects'
+
+  // Department data for Open Credit System
+  const departments = [
+    {
+      id: 1,
+      name: 'Computer Science & Engineering',
+      code: 'CSE',
+      description: 'Programming, Software Development, Algorithms, Data Structures',
+      icon: '💻',
+      color: 'blue',
+      subjects: [
+        { id: 1, name: 'Programming Fundamentals', code: 'CSE101', credits: 3, type: 'Core' },
+        { id: 2, name: 'Data Structures', code: 'CSE102', credits: 3, type: 'Core' },
+        { id: 3, name: 'Object-Oriented Programming', code: 'CSE201', credits: 3, type: 'Core' },
+        { id: 4, name: 'Database Management', code: 'CSE301', credits: 3, type: 'Core' },
+        { id: 5, name: 'Web Development', code: 'CSE302', credits: 3, type: 'Elective' },
+        { id: 6, name: 'Mobile App Development', code: 'CSE401', credits: 3, type: 'Elective' },
+        { id: 7, name: 'Machine Learning', code: 'CSE402', credits: 3, type: 'Elective' },
+        { id: 8, name: 'Software Engineering', code: 'CSE501', credits: 3, type: 'Core' }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Electronics & Communication',
+      code: 'ECE',
+      description: 'Circuit Design, Digital Electronics, Communication Systems',
+      icon: '⚡',
+      color: 'purple',
+      subjects: [
+        { id: 9, name: 'Basic Electronics', code: 'ECE101', credits: 3, type: 'Core' },
+        { id: 10, name: 'Digital Electronics', code: 'ECE102', credits: 3, type: 'Core' },
+        { id: 11, name: 'Circuit Analysis', code: 'ECE201', credits: 3, type: 'Core' },
+        { id: 12, name: 'Communication Systems', code: 'ECE301', credits: 3, type: 'Core' },
+        { id: 13, name: 'Microprocessors', code: 'ECE302', credits: 3, type: 'Core' },
+        { id: 14, name: 'VLSI Design', code: 'ECE401', credits: 3, type: 'Elective' },
+        { id: 15, name: 'Embedded Systems', code: 'ECE402', credits: 3, type: 'Elective' },
+        { id: 16, name: 'Signal Processing', code: 'ECE501', credits: 3, type: 'Elective' }
+      ]
+    },
+    {
+      id: 3,
+      name: 'Mathematics',
+      code: 'MATH',
+      description: 'Calculus, Algebra, Statistics, Applied Mathematics',
+      icon: '📊',
+      color: 'green',
+      subjects: [
+        { id: 17, name: 'Calculus I', code: 'MATH101', credits: 3, type: 'Core' },
+        { id: 18, name: 'Calculus II', code: 'MATH102', credits: 3, type: 'Core' },
+        { id: 19, name: 'Linear Algebra', code: 'MATH201', credits: 3, type: 'Core' },
+        { id: 20, name: 'Statistics', code: 'MATH301', credits: 3, type: 'Core' },
+        { id: 21, name: 'Differential Equations', code: 'MATH302', credits: 3, type: 'Core' },
+        { id: 22, name: 'Numerical Analysis', code: 'MATH401', credits: 3, type: 'Elective' },
+        { id: 23, name: 'Probability Theory', code: 'MATH402', credits: 3, type: 'Elective' },
+        { id: 24, name: 'Discrete Mathematics', code: 'MATH501', credits: 3, type: 'Core' }
+      ]
+    },
+    {
+      id: 4,
+      name: 'Physics',
+      code: 'PHY',
+      description: 'Mechanics, Thermodynamics, Quantum Physics, Modern Physics',
+      icon: '🔬',
+      color: 'red',
+      subjects: [
+        { id: 25, name: 'Mechanics', code: 'PHY101', credits: 3, type: 'Core' },
+        { id: 26, name: 'Thermodynamics', code: 'PHY102', credits: 3, type: 'Core' },
+        { id: 27, name: 'Electromagnetism', code: 'PHY201', credits: 3, type: 'Core' },
+        { id: 28, name: 'Quantum Physics', code: 'PHY301', credits: 3, type: 'Core' },
+        { id: 29, name: 'Modern Physics', code: 'PHY302', credits: 3, type: 'Core' },
+        { id: 30, name: 'Optics', code: 'PHY401', credits: 3, type: 'Elective' },
+        { id: 31, name: 'Solid State Physics', code: 'PHY402', credits: 3, type: 'Elective' },
+        { id: 32, name: 'Nuclear Physics', code: 'PHY501', credits: 3, type: 'Elective' }
+      ]
+    },
+    {
+      id: 5,
+      name: 'Chemistry',
+      code: 'CHEM',
+      description: 'Organic Chemistry, Inorganic Chemistry, Physical Chemistry',
+      icon: '🧪',
+      color: 'yellow',
+      subjects: [
+        { id: 33, name: 'General Chemistry', code: 'CHEM101', credits: 3, type: 'Core' },
+        { id: 34, name: 'Organic Chemistry', code: 'CHEM102', credits: 3, type: 'Core' },
+        { id: 35, name: 'Inorganic Chemistry', code: 'CHEM201', credits: 3, type: 'Core' },
+        { id: 36, name: 'Physical Chemistry', code: 'CHEM301', credits: 3, type: 'Core' },
+        { id: 37, name: 'Analytical Chemistry', code: 'CHEM302', credits: 3, type: 'Core' },
+        { id: 38, name: 'Biochemistry', code: 'CHEM401', credits: 3, type: 'Elective' },
+        { id: 39, name: 'Environmental Chemistry', code: 'CHEM402', credits: 3, type: 'Elective' },
+        { id: 40, name: 'Industrial Chemistry', code: 'CHEM501', credits: 3, type: 'Elective' }
+      ]
+    },
+    {
+      id: 6,
+      name: 'English & Literature',
+      code: 'ENG',
+      description: 'Language Skills, Literature, Communication, Creative Writing',
+      icon: '📚',
+      color: 'indigo',
+      subjects: [
+        { id: 41, name: 'English Composition', code: 'ENG101', credits: 3, type: 'Core' },
+        { id: 42, name: 'Literature Survey', code: 'ENG102', credits: 3, type: 'Core' },
+        { id: 43, name: 'Technical Writing', code: 'ENG201', credits: 3, type: 'Core' },
+        { id: 44, name: 'Creative Writing', code: 'ENG301', credits: 3, type: 'Elective' },
+        { id: 45, name: 'Public Speaking', code: 'ENG302', credits: 3, type: 'Elective' },
+        { id: 46, name: 'Business Communication', code: 'ENG401', credits: 3, type: 'Elective' },
+        { id: 47, name: 'Media Studies', code: 'ENG402', credits: 3, type: 'Elective' },
+        { id: 48, name: 'Linguistics', code: 'ENG501', credits: 3, type: 'Elective' }
+      ]
+    }
+  ];
 
   const semesters = [
     {
@@ -1137,192 +1251,376 @@ export default function SemesterCoursesPage() {
                 </div>
                 
                 <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
-                  Create your own personalized curriculum by selecting subjects from any semester. Build a custom learning path that fits your interests and career goals.
+                  Create your own personalized curriculum by selecting subjects from any department. Build a custom learning path that fits your interests and career goals.
                 </p>
+
+                {/* Progress Steps */}
+                <div className="flex justify-center items-center space-x-4 mb-8">
+                  <div className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
+                    openCreditStep === 'department' ? 'bg-violet-600 text-white' : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    <span className="w-6 h-6 rounded-full bg-current flex items-center justify-center text-sm font-bold">1</span>
+                    <span>Choose Department</span>
+                  </div>
+                  <div className={`w-8 h-1 ${openCreditStep === 'semester' || openCreditStep === 'subjects' ? 'bg-violet-500' : 'bg-gray-300'}`}></div>
+                  <div className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
+                    openCreditStep === 'semester' ? 'bg-violet-600 text-white' : openCreditStep === 'subjects' ? 'bg-violet-600 text-white' : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    <span className="w-6 h-6 rounded-full bg-current flex items-center justify-center text-sm font-bold">2</span>
+                    <span>Select Semester</span>
+                  </div>
+                  <div className={`w-8 h-1 ${openCreditStep === 'subjects' ? 'bg-violet-500' : 'bg-gray-300'}`}></div>
+                  <div className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
+                    openCreditStep === 'subjects' ? 'bg-violet-600 text-white' : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    <span className="w-6 h-6 rounded-full bg-current flex items-center justify-center text-sm font-bold">3</span>
+                    <span>Choose Subjects</span>
+                  </div>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Subject Selection */}
+                {/* Main Content Area */}
                 <div className="lg:col-span-2">
-                  {/* Semester Selector for Open Credit */}
-                  <div className="bg-white rounded-xl p-6 shadow-lg mb-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Select Semester to Browse Subjects</h3>
-                    <div className="grid grid-cols-4 gap-3">
-                      {semesters.map(semester => (
-                        <button
-                          key={semester.id}
-                          onClick={() => setSelectedSemesterForCredit(semester.id)}
-                          className={`p-3 rounded-lg font-medium transition-colors ${
-                            selectedSemesterForCredit === semester.id
-                              ? 'bg-violet-600 text-white'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                          }`}
-                        >
-                          Semester {semester.id}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Subjects List */}
-                  <div className="bg-white rounded-xl p-6 shadow-lg">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">
-                      Available Subjects - Semester {selectedSemesterForCredit}
-                    </h3>
-                    <div className="space-y-3 max-h-96 overflow-y-auto">
-                      {semesters.find(sem => sem.id === selectedSemesterForCredit)?.subjects.map(subject => {
-                        const isSelected = selectedSubjects.find(s => s.id === subject.id);
-                        return (
+                  {/* Step 1: Department Selection */}
+                  {openCreditStep === 'department' && (
+                    <div className="bg-white rounded-xl p-6 shadow-lg">
+                      <h3 className="text-xl font-bold text-gray-900 mb-6">Choose Your Department</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {departments.map(department => (
                           <div
-                            key={subject.id}
-                            className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                              isSelected
+                            key={department.id}
+                            onClick={() => {
+                              setSelectedDepartment(department);
+                              setOpenCreditStep('semester');
+                            }}
+                            className={`p-6 rounded-lg border-2 cursor-pointer transition-all hover:shadow-lg ${
+                              selectedDepartment?.id === department.id
                                 ? 'border-violet-500 bg-violet-50'
                                 : 'border-gray-200 hover:border-gray-300'
                             }`}
-                            onClick={() => {
-                              if (isSelected) {
-                                setSelectedSubjects(prev => prev.filter(s => s.id !== subject.id));
-                              } else {
-                                setSelectedSubjects(prev => [...prev, subject]);
-                              }
-                            }}
                           >
-                            <div className="flex items-start justify-between">
+                            <div className="flex items-start space-x-4">
+                              <div className="text-4xl">{department.icon}</div>
                               <div className="flex-1">
-                                <div className="flex items-center space-x-3 mb-2">
-                                  <h4 className="font-semibold text-gray-900">{subject.name}</h4>
-                                  <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getSubjectTypeColor(subject.type)}`}>
-                                    {subject.type}
-                                  </span>
-                                  <span className="text-sm font-bold text-violet-600 bg-violet-100 px-2 py-1 rounded-full">
-                                    {subject.credits} credits
-                                  </span>
+                                <h4 className="font-bold text-gray-900 mb-2">{department.name}</h4>
+                                <p className="text-sm text-gray-600 mb-3">{department.description}</p>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium text-gray-700">{department.code}</span>
+                                  <span className="text-sm text-gray-500">{department.subjects.length} subjects</span>
                                 </div>
-                                <p className="text-sm text-gray-600 mb-2">{subject.description}</p>
-                                <div className="flex items-center space-x-4 text-xs text-gray-500">
-                                  <span className="flex items-center space-x-1">
-                                    <FaUsers className="w-3 h-3" />
-                                    <span>{subject.instructor}</span>
-                                  </span>
-                                  <span className="flex items-center space-x-1">
-                                    <FaCalendar className="w-3 h-3" />
-                                    <span>{subject.schedule}</span>
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="ml-4">
-                                {isSelected ? (
-                                  <FaCheckCircle className="w-5 h-5 text-violet-600" />
-                                ) : (
-                                  <div className="w-5 h-5 border-2 border-gray-300 rounded-full"></div>
-                                )}
                               </div>
                             </div>
                           </div>
-                        );
-                      })}
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* Step 2: Semester Selection */}
+                  {openCreditStep === 'semester' && selectedDepartment && (
+                    <div className="space-y-6">
+                      {/* Department Info */}
+                      <div className="bg-white rounded-xl p-6 shadow-lg">
+                        <div className="flex items-center space-x-4 mb-4">
+                          <button
+                            onClick={() => setOpenCreditStep('department')}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                          >
+                            <FaArrowRight className="w-4 h-4 text-gray-600 rotate-180" />
+                          </button>
+                          <div className="text-3xl">{selectedDepartment.icon}</div>
+                          <div>
+                            <h3 className="text-xl font-bold text-gray-900">{selectedDepartment.name}</h3>
+                            <p className="text-gray-600">{selectedDepartment.description}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Semester Selector */}
+                      <div className="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">Select Semester to Browse Subjects</h3>
+                        <div className="grid grid-cols-4 gap-3">
+                          {semesters.map(semester => (
+                            <button
+                              key={semester.id}
+                              onClick={() => {
+                                setSelectedSemesterForCredit(semester.id);
+                                setOpenCreditStep('subjects');
+                              }}
+                              className={`p-3 rounded-lg font-medium transition-colors ${
+                                selectedSemesterForCredit === semester.id
+                                  ? 'bg-violet-600 text-white'
+                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                              }`}
+                            >
+                              Semester {semester.id}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 3: Subject Selection */}
+                  {openCreditStep === 'subjects' && selectedDepartment && (
+                    <div className="space-y-6">
+                      {/* Department and Semester Info */}
+                      <div className="bg-white rounded-xl p-6 shadow-lg">
+                        <div className="flex items-center space-x-4 mb-4">
+                          <button
+                            onClick={() => setOpenCreditStep('semester')}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                          >
+                            <FaArrowRight className="w-4 h-4 text-gray-600 rotate-180" />
+                          </button>
+                          <div className="text-3xl">{selectedDepartment.icon}</div>
+                          <div>
+                            <h3 className="text-xl font-bold text-gray-900">{selectedDepartment.name}</h3>
+                            <p className="text-gray-600">Semester {selectedSemesterForCredit} • {selectedDepartment.subjects.length} subjects available</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Subjects List */}
+                      <div className="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">
+                          Available Subjects - {selectedDepartment.name}
+                        </h3>
+                        <div className="space-y-3 max-h-96 overflow-y-auto">
+                          {selectedDepartment.subjects.map(subject => {
+                            const isSelected = selectedSubjects.find(s => s.id === subject.id);
+                            return (
+                              <div
+                                key={subject.id}
+                                className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                                  isSelected
+                                    ? 'border-violet-500 bg-violet-50'
+                                    : 'border-gray-200 hover:border-gray-300'
+                                }`}
+                                onClick={() => {
+                                  if (isSelected) {
+                                    setSelectedSubjects(prev => prev.filter(s => s.id !== subject.id));
+                                  } else {
+                                    setSelectedSubjects(prev => [...prev, subject]);
+                                  }
+                                }}
+                              >
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <div className="flex items-center space-x-3 mb-2">
+                                      <h4 className="font-semibold text-gray-900">{subject.name}</h4>
+                                      <span className={`px-2 py-1 rounded-full text-xs font-medium border ${
+                                        subject.type === 'Core' 
+                                          ? 'border-blue-500 bg-blue-100 text-blue-800'
+                                          : 'border-green-500 bg-green-100 text-green-800'
+                                      }`}>
+                                        {subject.type}
+                                      </span>
+                                      <span className="text-sm font-bold text-violet-600 bg-violet-100 px-2 py-1 rounded-full">
+                                        {subject.credits} credits
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center space-x-4 text-xs text-gray-500">
+                                      <span className="font-medium">{subject.code}</span>
+                                    </div>
+                                  </div>
+                                  <div className="ml-4">
+                                    {isSelected ? (
+                                      <FaCheckCircle className="w-5 h-5 text-violet-600" />
+                                    ) : (
+                                      <div className="w-5 h-5 border-2 border-gray-300 rounded-full"></div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Selection Summary */}
                 <div className="lg:col-span-1">
                   <div className="bg-white rounded-xl p-6 shadow-lg sticky top-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Your Custom Curriculum</h3>
-                    
-                    {/* Total Credits */}
-                    <div className="bg-violet-50 rounded-lg p-4 mb-6">
-                      <div className="flex items-center space-x-3">
-                        <FaClock className="w-6 h-6 text-violet-600" />
-                        <div>
-                          <p className="text-sm text-gray-600">Total Credits</p>
-                          <p className="text-2xl font-bold text-violet-600">
-                            {selectedSubjects.reduce((total, subject) => total + subject.credits, 0)}
-                          </p>
+                    {/* Step 1: Department Selection Info */}
+                    {openCreditStep === 'department' && (
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">Choose Your Department</h3>
+                        <div className="space-y-4">
+                          <div className="p-4 bg-blue-50 rounded-lg">
+                            <h4 className="font-semibold text-blue-900 mb-2">Available Departments</h4>
+                            <p className="text-sm text-blue-800 mb-3">Select a department to view available subjects and create your custom curriculum.</p>
+                            <div className="text-sm text-blue-700">
+                              <div className="flex justify-between">
+                                <span>Total Departments:</span>
+                                <span className="font-bold">{departments.length}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Total Subjects:</span>
+                                <span className="font-bold">{departments.reduce((sum, dept) => sum + dept.subjects.length, 0)}</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="p-4 bg-green-50 rounded-lg">
+                            <h4 className="font-semibold text-green-900 mb-2">Next Steps</h4>
+                            <ul className="text-sm text-green-800 space-y-1">
+                              <li>• Choose your department</li>
+                              <li>• Select semester</li>
+                              <li>• Pick subjects</li>
+                              <li>• Enroll in courses</li>
+                            </ul>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
 
-                    {/* Selected Subjects */}
-                    <div className="space-y-4">
-                      <h4 className="font-semibold text-gray-900">Selected Subjects ({selectedSubjects.length})</h4>
-                      {selectedSubjects.length === 0 ? (
-                        <p className="text-gray-500 text-sm">No subjects selected yet. Choose subjects from the list to build your curriculum.</p>
-                      ) : (
-                        <div className="space-y-2">
-                          {selectedSubjects.map(subject => (
-                            <div key={subject.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    {/* Step 2: Semester Selection Info */}
+                    {openCreditStep === 'semester' && selectedDepartment && (
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">Selected Department</h3>
+                        <div className="space-y-4">
+                          <div className="p-4 bg-violet-50 rounded-lg">
+                            <div className="flex items-center space-x-3 mb-3">
+                              <div className="text-2xl">{selectedDepartment.icon}</div>
                               <div>
-                                <span className="text-sm text-gray-900 font-medium">{subject.name}</span>
-                                <p className="text-xs text-gray-600">{subject.code}</p>
+                                <h4 className="font-semibold text-violet-900">{selectedDepartment.name}</h4>
+                                <p className="text-sm text-violet-700">{selectedDepartment.code}</p>
                               </div>
-                              <span className="text-xs font-bold text-violet-600">{subject.credits}</span>
                             </div>
-                          ))}
+                            <p className="text-sm text-violet-800">{selectedDepartment.description}</p>
+                          </div>
+                          
+                          <div className="p-4 bg-blue-50 rounded-lg">
+                            <h4 className="font-semibold text-blue-900 mb-2">Department Stats</h4>
+                            <div className="text-sm text-blue-800 space-y-1">
+                              <div className="flex justify-between">
+                                <span>Total Subjects:</span>
+                                <span className="font-bold">{selectedDepartment.subjects.length}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Core Subjects:</span>
+                                <span className="font-bold">{selectedDepartment.subjects.filter(s => s.type === 'Core').length}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Elective Subjects:</span>
+                                <span className="font-bold">{selectedDepartment.subjects.filter(s => s.type === 'Elective').length}</span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
-                    {/* Action Buttons */}
-                    <div className="mt-6 space-y-3">
-                      <button 
-                        disabled={selectedSubjects.length === 0}
-                        className={`w-full px-4 py-3 font-medium rounded-lg transition-colors duration-300 ${
-                          selectedSubjects.length > 0
-                            ? 'bg-violet-600 hover:bg-violet-700 text-white'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
-                      >
-                        Enroll Selected Subjects
-                      </button>
-                      <button 
-                        onClick={() => setSelectedSubjects([])}
-                        disabled={selectedSubjects.length === 0}
-                        className={`w-full px-4 py-3 border font-medium rounded-lg transition-colors duration-300 ${
-                          selectedSubjects.length > 0
-                            ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                            : 'border-gray-200 text-gray-400 cursor-not-allowed'
-                        }`}
-                      >
-                        Clear Selection
-                      </button>
-                    </div>
+                    {/* Step 3: Subject Selection Summary */}
+                    {openCreditStep === 'subjects' && selectedDepartment && (
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">Your Custom Curriculum</h3>
+                        
+                        {/* Department Info */}
+                        <div className="p-4 bg-violet-50 rounded-lg mb-4">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <div className="text-2xl">{selectedDepartment.icon}</div>
+                            <div>
+                              <h4 className="font-semibold text-violet-900">{selectedDepartment.name}</h4>
+                              <p className="text-sm text-violet-700">Semester {selectedSemesterForCredit}</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Total Credits */}
+                        <div className="bg-violet-50 rounded-lg p-4 mb-6">
+                          <div className="flex items-center space-x-3">
+                            <FaClock className="w-6 h-6 text-violet-600" />
+                            <div>
+                              <p className="text-sm text-gray-600">Total Credits</p>
+                              <p className="text-2xl font-bold text-violet-600">
+                                {selectedSubjects.reduce((total, subject) => total + subject.credits, 0)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
 
-                    {/* Credit Requirements Info */}
-                    <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                      <h5 className="font-semibold text-blue-900 mb-2">Credit Requirements</h5>
-                      <ul className="text-sm text-blue-800 space-y-1">
-                        <li>• Minimum: 12 credits per semester</li>
-                        <li>• Maximum: 24 credits per semester</li>
-                        <li>• Core subjects: Required for graduation</li>
-                        <li>• Electives: Choose freely</li>
-                        <li>• Prerequisites: Must be completed first</li>
-                      </ul>
-                    </div>
-
-                    {/* Semester Distribution */}
-                    {selectedSubjects.length > 0 && (
-                      <div className="mt-6 p-4 bg-green-50 rounded-lg">
-                        <h5 className="font-semibold text-green-900 mb-2">Semester Distribution</h5>
-                        <div className="space-y-2">
-                          {semesters.map(semester => {
-                            const semesterSubjects = selectedSubjects.filter(subject => 
-                              semesters.find(sem => sem.id === selectedSemesterForCredit)?.subjects.some(s => s.id === subject.id)
-                            );
-                            const semesterCredits = semesterSubjects.reduce((total, subject) => total + subject.credits, 0);
-                            
-                            if (semesterCredits > 0) {
-                              return (
-                                <div key={semester.id} className="flex justify-between items-center">
-                                  <span className="text-sm text-green-800">Semester {semester.id}</span>
-                                  <span className="text-sm font-bold text-green-900">{semesterCredits} credits</span>
+                        {/* Selected Subjects */}
+                        <div className="space-y-4">
+                          <h4 className="font-semibold text-gray-900">Selected Subjects ({selectedSubjects.length})</h4>
+                          {selectedSubjects.length === 0 ? (
+                            <p className="text-gray-500 text-sm">No subjects selected yet. Choose subjects from the list to build your curriculum.</p>
+                          ) : (
+                            <div className="space-y-2">
+                              {selectedSubjects.map(subject => (
+                                <div key={subject.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                  <div>
+                                    <span className="text-sm text-gray-900 font-medium">{subject.name}</span>
+                                    <p className="text-xs text-gray-600">{subject.code}</p>
+                                  </div>
+                                  <span className="text-xs font-bold text-violet-600">{subject.credits}</span>
                                 </div>
-                              );
-                            }
-                            return null;
-                          })}
+                              ))}
+                            </div>
+                          )}
                         </div>
+
+                        {/* Action Buttons */}
+                        <div className="mt-6 space-y-3">
+                          <button 
+                            disabled={selectedSubjects.length === 0}
+                            className={`w-full px-4 py-3 font-medium rounded-lg transition-colors duration-300 ${
+                              selectedSubjects.length > 0
+                                ? 'bg-violet-600 hover:bg-violet-700 text-white'
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }`}
+                          >
+                            Enroll Selected Subjects
+                          </button>
+                          <button 
+                            onClick={() => setSelectedSubjects([])}
+                            disabled={selectedSubjects.length === 0}
+                            className={`w-full px-4 py-3 border font-medium rounded-lg transition-colors duration-300 ${
+                              selectedSubjects.length > 0
+                                ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                                : 'border-gray-200 text-gray-400 cursor-not-allowed'
+                            }`}
+                          >
+                            Clear Selection
+                          </button>
+                        </div>
+
+                        {/* Credit Requirements Info */}
+                        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                          <h5 className="font-semibold text-blue-900 mb-2">Credit Requirements</h5>
+                          <ul className="text-sm text-blue-800 space-y-1">
+                            <li>• Minimum: 12 credits per semester</li>
+                            <li>• Maximum: 24 credits per semester</li>
+                            <li>• Core subjects: Required for graduation</li>
+                            <li>• Electives: Choose freely</li>
+                            <li>• Prerequisites: Must be completed first</li>
+                          </ul>
+                        </div>
+
+                        {/* Subject Type Distribution */}
+                        {selectedSubjects.length > 0 && (
+                          <div className="mt-6 p-4 bg-green-50 rounded-lg">
+                            <h5 className="font-semibold text-green-900 mb-2">Subject Distribution</h5>
+                            <div className="space-y-2">
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm text-green-800">Core Subjects</span>
+                                <span className="text-sm font-bold text-green-900">
+                                  {selectedSubjects.filter(s => s.type === 'Core').length}
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm text-green-800">Elective Subjects</span>
+                                <span className="text-sm font-bold text-green-900">
+                                  {selectedSubjects.filter(s => s.type === 'Elective').length}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

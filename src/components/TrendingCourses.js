@@ -1,5 +1,7 @@
 'use client';
 
+import Image from "next/image";
+
 export default function TrendingCourses() {
   const courses = [
     {
@@ -95,10 +97,12 @@ export default function TrendingCourses() {
                 
                 {/* Instructor Avatar */}
                 <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-violet-200">
-                  <img
+                  <Image
                     src={course.instructorAvatar}
                     alt="Instructor"
                     className="w-full h-full object-cover"
+                    width={40}
+                    height={40}
                   />
                 </div>
               </div>

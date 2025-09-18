@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { FaSearch, FaArrowRight, FaBook, FaUserTie, FaCertificate, FaUsers } from 'react-icons/fa';
 import { Building2 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,10 +97,12 @@ export default function Hero() {
           {/* Right Visual Section */}
           <div className="relative">
             <div className="relative z-10">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
                 alt="Delicious carrot cake with cream cheese frosting"
                 className="w-full h-auto rounded-2xl shadow-xl"
+                width={1000}
+                height={1000}
               />
             </div>
             {/* Decorative background elements */}

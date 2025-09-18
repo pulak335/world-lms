@@ -1,6 +1,7 @@
 'use client';
 
 import { FaCog, FaBookOpen, FaUserGraduate, FaCloud } from 'react-icons/fa';
+import Image from "next/image";
 
 export default function PromoSection() {
   const features = [
@@ -28,10 +29,12 @@ export default function PromoSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Students Image */}
           <div className="relative">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
               alt="Students learning with tablets and digital devices"
               className="w-full h-auto rounded-2xl shadow-lg"
+              width={1000}
+              height={1000}
             />
             {/* Decorative purple circle */}
             <div className="absolute -top-8 -right-8 w-32 h-32 bg-violet-200 rounded-full opacity-60"></div>
@@ -56,7 +59,7 @@ export default function PromoSection() {
 
             {/* Description */}
             <p className="text-lg text-gray-600 leading-relaxed">
-              Advance your career by mastering in-demand skills! Gain certifications, learn from expert instructors, and explore hands-on content designed to help you succeed in the modern tech landscape. Whether you're just starting or looking to level up, our engaging courses and latest industry insights will keep you ahead.
+              Advance your career by mastering in-demand skills! Gain certifications, learn from expert instructors, and explore hands-on content designed to help you succeed in the modern tech landscape. Whether you&apos;re just starting or looking to level up, our engaging courses and latest industry insights will keep you ahead.
             </p>
 
             {/* Feature Cards Grid */}

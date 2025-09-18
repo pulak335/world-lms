@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { FaStar, FaRegClock, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import Image from "next/image";
 
 export default function NewestCourses() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -141,10 +142,12 @@ export default function NewestCourses() {
             >
               {/* Course Image */}
               <div className="relative h-48 w-full overflow-hidden">
-                <img
+                <Image
                   src={course.image}
                   alt={course.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  width={400}
+                  height={400}
                 />
               </div>
               
@@ -158,10 +161,12 @@ export default function NewestCourses() {
                 {/* Instructor Avatar */}
                 <div className="flex items-center space-x-3 mb-3">
                   <div className="relative w-8 h-8 rounded-full overflow-hidden">
-                    <img
+                    <Image
                       src={course.instructorAvatar}
                       alt="Instructor"
                       className="w-full h-full object-cover"
+                      width={40}
+                      height={40}
                     />
                   </div>
                 </div>

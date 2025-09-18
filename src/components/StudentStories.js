@@ -1,6 +1,7 @@
 'use client';
 
 import { FaStar, FaQuoteLeft } from 'react-icons/fa';
+import Image from "next/image";
 
 export default function StudentStories() {
   const stories = [
@@ -103,10 +104,12 @@ export default function StudentStories() {
               {/* Student Info */}
               <div className="flex items-center space-x-4 mb-6">
                 <div className="relative w-16 h-16 rounded-full overflow-hidden">
-                  <img
+                  <Image
                     src={story.image}
                     alt={story.name}
                     className="w-full h-full object-cover"
+                    width={40}
+                    height={40}
                   />
                 </div>
                 <div>
@@ -125,7 +128,7 @@ export default function StudentStories() {
 
               {/* Story */}
               <blockquote className="text-gray-700 mb-4 leading-relaxed">
-                "{story.story}"
+              &quot;{story.story}&quot;
               </blockquote>
 
               {/* Course */}
