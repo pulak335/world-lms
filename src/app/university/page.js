@@ -6,6 +6,132 @@ import Image from 'next/image';
 
 export default function UniversityPage() {
   const [activeTab, setActiveTab] = useState('programs');
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const [applicationData, setApplicationData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    passportNumber: '',
+    nationality: '',
+    program: '',
+    intake: '',
+    address: '',
+    city: '',
+    country: '',
+    postalCode: '',
+    academicHistory: [
+      {
+        level: '',
+        instituteName: '',
+        passingYear: '',
+        result: '',
+        board: ''
+      }
+    ]
+  });
+  const [applicationSubmitted, setApplicationSubmitted] = useState(false);
+  const [referenceNumber, setReferenceNumber] = useState('');
+  const [applicationNumber, setApplicationNumber] = useState('');
+
+  // Generate unique reference and application numbers
+  const generateNumbers = () => {
+    const timestamp = Date.now();
+    const randomNum = Math.floor(Math.random() * 1000);
+    const refNum = `REF-${timestamp.toString().slice(-6)}-${randomNum.toString().padStart(3, '0')}`;
+    const appNum = `APP-${timestamp.toString().slice(-8)}-${randomNum.toString().padStart(4, '0')}`;
+    return { refNum, appNum };
+  };
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setApplicationData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle academic history changes
+  const handleAcademicHistoryChange = (index, field, value) => {
+    setApplicationData(prev => ({
+      ...prev,
+      academicHistory: prev.academicHistory.map((item, i) => 
+        i === index ? { ...item, [field]: value } : item
+      )
+    }));
+  };
+
+  // Add new academic history entry
+  const addAcademicHistory = () => {
+    setApplicationData(prev => ({
+      ...prev,
+      academicHistory: [
+        ...prev.academicHistory,
+        {
+          level: '',
+          instituteName: '',
+          passingYear: '',
+          result: '',
+          board: ''
+        }
+      ]
+    }));
+  };
+
+  // Remove academic history entry
+  const removeAcademicHistory = (index) => {
+    setApplicationData(prev => ({
+      ...prev,
+      academicHistory: prev.academicHistory.filter((_, i) => i !== index)
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmitApplication = (e) => {
+    e.preventDefault();
+    
+    // Generate reference and application numbers
+    const { refNum, appNum } = generateNumbers();
+    setReferenceNumber(refNum);
+    setApplicationNumber(appNum);
+    
+    // Simulate form submission
+    setTimeout(() => {
+      setApplicationSubmitted(true);
+    }, 1000);
+  };
+
+  // Reset modal
+  const resetModal = () => {
+    setShowApplicationModal(false);
+    setApplicationSubmitted(false);
+    setApplicationData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      passportNumber: '',
+      nationality: '',
+      program: '',
+      intake: '',
+      address: '',
+      city: '',
+      country: '',
+      postalCode: '',
+      academicHistory: [
+        {
+          level: '',
+          instituteName: '',
+          passingYear: '',
+          result: '',
+          board: ''
+        }
+      ]
+    });
+    setReferenceNumber('');
+    setApplicationNumber('');
+  };
 
   const programs = [
     {
@@ -186,7 +312,10 @@ export default function UniversityPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold rounded-xl transition-colors duration-300 flex items-center justify-center space-x-2">
+              <button 
+                onClick={() => setShowApplicationModal(true)}
+                className="px-8 py-4 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold rounded-xl transition-colors duration-300 flex items-center justify-center space-x-2"
+              >
                 <span>Apply Now</span>
                 <FaArrowRight className="w-4 h-4" />
               </button>
@@ -357,7 +486,10 @@ export default function UniversityPage() {
                       ))}
                     </div>
                     
-                    <button className={`w-full py-2 ${degree.textColor} border-2 border-current rounded-lg hover:bg-current hover:text-white transition-colors font-medium text-sm`}>
+                    <button 
+                      onClick={() => setShowApplicationModal(true)}
+                      className={`w-full py-2 ${degree.textColor} border-2 border-current rounded-lg hover:bg-white hover:text-gray-900 transition-colors font-medium text-sm`}
+                    >
                       Apply Now
                     </button>
                   </div>
@@ -726,12 +858,428 @@ export default function UniversityPage() {
                 <FaInstagram className="w-6 h-6 text-white" />
               </a>
             </div>
-            <p className="text-gray-400 text-sm">
-              © 2024 Excellence University. All rights reserved.
-            </p>
           </div>
         </div>
       </section>
+
+      {/* Application Modal */}
+      {showApplicationModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Blurred Background */}
+          <div 
+            className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+            onClick={resetModal}
+          />
+          
+          {/* Modal Content */}
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {!applicationSubmitted ? (
+              /* Application Form */
+              <div className="p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center">
+                      <FaGraduationCap className="w-6 h-6 text-violet-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">University Application</h2>
+                      <p className="text-gray-600">Fill out the form to apply for admission</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={resetModal}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <form onSubmit={handleSubmitApplication} className="space-y-6">
+                  {/* Personal Information */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Personal Information</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
+                        <input
+                          type="text"
+                          name="firstName"
+                          value={applicationData.firstName}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Last Name *</label>
+                        <input
+                          type="text"
+                          name="lastName"
+                          value={applicationData.lastName}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={applicationData.email}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={applicationData.phone}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Passport Number *</label>
+                        <input
+                          type="text"
+                          name="passportNumber"
+                          value={applicationData.passportNumber}
+                          onChange={handleInputChange}
+                          required
+                          placeholder="Enter your passport number"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Nationality *</label>
+                        <input
+                          type="text"
+                          name="nationality"
+                          value={applicationData.nationality}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Academic Information */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Academic Information</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Program of Interest *</label>
+                        <select
+                          name="program"
+                          value={applicationData.program}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        >
+                          <option value="">Select Program</option>
+                          <option value="Bachelor of Computer Science">Bachelor of Computer Science</option>
+                          <option value="Master of Business Administration">Master of Business Administration</option>
+                          <option value="Bachelor of Engineering">Bachelor of Engineering</option>
+                          <option value="Master of Data Science">Master of Data Science</option>
+                          <option value="Bachelor of Arts">Bachelor of Arts</option>
+                          <option value="Master of Engineering">Master of Engineering</option>
+                          <option value="OTHM Level 3">OTHM Level 3 (Foundation)</option>
+                          <option value="OTHM Level 4">OTHM Level 4 (Diploma)</option>
+                          <option value="OTHM Level 5">OTHM Level 5 (Diploma)</option>
+                          <option value="OTHM Top-up">OTHM Top-up (Degree)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Intake Period *</label>
+                        <select
+                          name="intake"
+                          value={applicationData.intake}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        >
+                          <option value="">Select Intake</option>
+                          <option value="Fall 2024">Fall 2024</option>
+                          <option value="Spring 2025">Spring 2025</option>
+                          <option value="Summer 2025">Summer 2025</option>
+                          <option value="Fall 2025">Fall 2025</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Academic History */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Academic History *</h3>
+                      <button
+                        type="button"
+                        onClick={addAcademicHistory}
+                        className="px-4 py-2 bg-violet-100 text-violet-600 rounded-lg hover:bg-violet-200 transition-colors text-sm font-medium"
+                      >
+                        + Add Education
+                      </button>
+                    </div>
+                    
+                    {applicationData.academicHistory.map((academic, index) => (
+                      <div key={index} className="bg-gray-50 rounded-lg p-6 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium text-gray-900">Education #{index + 1}</h4>
+                          {applicationData.academicHistory.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => removeAcademicHistory(index)}
+                              className="text-red-500 hover:text-red-700 text-sm"
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Education Level *</label>
+                            <select
+                              value={academic.level}
+                              onChange={(e) => handleAcademicHistoryChange(index, 'level', e.target.value)}
+                              required
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                            >
+                              <option value="">Select Education Level</option>
+                              <option value="SSC">SSC (Secondary School Certificate)</option>
+                              <option value="HSC">HSC (Higher Secondary Certificate)</option>
+                              <option value="Bachelor">Bachelor</option>
+                              <option value="Honours">Honours</option>
+                              <option value="Masters">Masters</option>
+                              <option value="PhD">PhD</option>
+                              <option value="Diploma">Diploma</option>
+                              <option value="Certificate">Certificate</option>
+                              <option value="Other">Other</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Institute Name *</label>
+                            <input
+                              type="text"
+                              value={academic.instituteName}
+                              onChange={(e) => handleAcademicHistoryChange(index, 'instituteName', e.target.value)}
+                              required
+                              placeholder="Enter institute/university name"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Passing Year *</label>
+                            <select
+                              value={academic.passingYear}
+                              onChange={(e) => handleAcademicHistoryChange(index, 'passingYear', e.target.value)}
+                              required
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                            >
+                              <option value="">Select Year</option>
+                              {Array.from({ length: 20 }, (_, i) => {
+                                const year = new Date().getFullYear() - i;
+                                return (
+                                  <option key={year} value={year}>{year}</option>
+                                );
+                              })}
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Result/GPA *</label>
+                            <input
+                              type="text"
+                              value={academic.result}
+                              onChange={(e) => handleAcademicHistoryChange(index, 'result', e.target.value)}
+                              required
+                              placeholder="e.g., 3.5/4.0, A+, 85%"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Board/University</label>
+                            <input
+                              type="text"
+                              value={academic.board}
+                              onChange={(e) => handleAcademicHistoryChange(index, 'board', e.target.value)}
+                              placeholder="e.g., Dhaka Board, BUET"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Address Information */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Address Information</h3>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Street Address *</label>
+                      <input
+                        type="text"
+                        name="address"
+                        value={applicationData.address}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">City *</label>
+                        <input
+                          type="text"
+                          name="city"
+                          value={applicationData.city}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Country *</label>
+                        <input
+                          type="text"
+                          name="country"
+                          value={applicationData.country}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Postal Code *</label>
+                        <input
+                          type="text"
+                          name="postalCode"
+                          value={applicationData.postalCode}
+                          onChange={handleInputChange}
+                          required
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="pt-6 border-t border-gray-200">
+                    <button
+                      type="submit"
+                      className="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center space-x-2"
+                    >
+                      <span>Submit Application</span>
+                      <FaArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </form>
+              </div>
+            ) : (
+              /* Success Message */
+              <div className="p-8 text-center">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FaCheckCircle className="w-10 h-10 text-green-600" />
+                </div>
+                
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Application Submitted Successfully!</h2>
+                <p className="text-gray-600 mb-8">
+                  Thank you for your application. We have received your information and will review it shortly.
+                </p>
+
+                <div className="bg-gray-50 rounded-lg p-6 mb-8">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Application Details</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Reference Number:</span>
+                      <span className="font-mono font-semibold text-violet-600">{referenceNumber}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Application Number:</span>
+                      <span className="font-mono font-semibold text-violet-600">{applicationNumber}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Program:</span>
+                      <span className="font-semibold text-gray-900">{applicationData.program}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Intake:</span>
+                      <span className="font-semibold text-gray-900">{applicationData.intake}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Academic History Summary */}
+                  <div className="mt-6">
+                    <h4 className="text-md font-semibold text-gray-900 mb-3">Academic History</h4>
+                    <div className="space-y-3">
+                      {applicationData.academicHistory.map((academic, index) => (
+                        <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Level:</span>
+                              <span className="font-medium text-gray-900">{academic.level}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Institute:</span>
+                              <span className="font-medium text-gray-900">{academic.instituteName}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Year:</span>
+                              <span className="font-medium text-gray-900">{academic.passingYear}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Result:</span>
+                              <span className="font-medium text-gray-900">{academic.result}</span>
+                            </div>
+                            {academic.board && (
+                              <div className="flex justify-between md:col-span-2">
+                                <span className="text-gray-600">Board:</span>
+                                <span className="font-medium text-gray-900">{academic.board}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-600">
+                    Please save your reference and application numbers for future correspondence.
+                  </p>
+                  <button
+                    onClick={resetModal}
+                    className="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

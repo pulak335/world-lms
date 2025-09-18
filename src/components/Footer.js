@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaYoutube } from 'react-icons/fa';
 
 export default function Footer() {
@@ -7,25 +8,25 @@ export default function Footer() {
 
   const footerLinks = {
     company: [
-      { name: 'About Us', href: '#' },
-      { name: 'Our Team', href: '#' },
-      { name: 'Careers', href: '#' },
-      { name: 'Press', href: '#' },
-      { name: 'Blog', href: '#' }
+      { name: 'About Us', href: '/about-us' },
+      { name: 'Our Team', href: '/our-team' },
+      { name: 'Careers', href: '/careers' },
+      { name: 'Press', href: '/press' },
+      { name: 'Blog', href: '/blog' }
     ],
     courses: [
-      { name: 'All Courses', href: '#' },
-      { name: 'Web Development', href: '#' },
-      { name: 'Data Science', href: '#' },
-      { name: 'Design', href: '#' },
-      { name: 'Marketing', href: '#' }
+      { name: 'All Courses', href: '/courses' },
+      { name: 'University', href: '/university' },
+      { name: 'Semester Courses', href: '/university/semester-courses' },
+      { name: 'Instructors', href: '/instructors' },
+      { name: 'OTHM Programs', href: '/university' }
     ],
     support: [
-      { name: 'Help Center', href: '#' },
-      { name: 'Contact Us', href: '#' },
-      { name: 'Privacy Policy', href: '#' },
-      { name: 'Terms of Service', href: '#' },
-      { name: 'FAQ', href: '#' }
+      { name: 'Help Center', href: '/help-center' },
+      { name: 'Contact Us', href: '/contact-us' },
+      { name: 'Privacy Policy', href: '/privacy-policy' },
+      { name: 'Terms of Service', href: '/terms-of-service' },
+      { name: 'FAQ', href: '/faq' }
     ],
     resources: [
       { name: 'Learning Paths', href: '#' },
@@ -53,27 +54,27 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-6">
               <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-violet-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">M</span>
+                <span className="text-white font-bold text-sm">E</span>
               </div>
-              <span className="text-xl font-semibold">My Website</span>
+              <span className="text-xl font-semibold">Excellence University</span>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
-              Empowering learners worldwide with high-quality education. Join our community of students and instructors to unlock your potential and achieve your goals.
+              Empowering minds, transforming futures. Join our world-class university and unlock your potential with internationally recognized programs and expert faculty.
             </p>
             
             {/* Contact Info */}
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <FaPhone className="text-violet-400 w-4 h-4" />
-                <span className="text-gray-300">123-456-7890</span>
+                <span className="text-gray-300">+1 (555) 123-4567</span>
               </div>
               <div className="flex items-center space-x-3">
                 <FaEnvelope className="text-violet-400 w-4 h-4" />
-                <span className="text-gray-300">info@example.com</span>
+                <span className="text-gray-300">info@excellence.edu</span>
               </div>
               <div className="flex items-center space-x-3">
                 <FaMapMarkerAlt className="text-violet-400 w-4 h-4" />
-                <span className="text-gray-300">123 Education St, Learning City</span>
+                <span className="text-gray-300">123 Education Street, Learning City, LC 12345</span>
               </div>
             </div>
           </div>
@@ -84,12 +85,12 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.company.map((link, index) => (
                 <li key={index}>
-                  <a 
+                  <Link 
                     href={link.href} 
                     className="text-gray-300 hover:text-violet-400 transition-colors duration-300"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -101,12 +102,12 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.courses.map((link, index) => (
                 <li key={index}>
-                  <a 
+                  <Link 
                     href={link.href} 
                     className="text-gray-300 hover:text-violet-400 transition-colors duration-300"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -118,12 +119,12 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.support.map((link, index) => (
                 <li key={index}>
-                  <a 
+                  <Link 
                     href={link.href} 
                     className="text-gray-300 hover:text-violet-400 transition-colors duration-300"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -138,12 +139,12 @@ export default function Footer() {
               <ul className="space-y-3">
                 {footerLinks.resources.map((link, index) => (
                   <li key={index}>
-                    <a 
+                    <Link 
                       href={link.href} 
                       className="text-gray-300 hover:text-violet-400 transition-colors duration-300"
                     >
                       {link.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -151,7 +152,7 @@ export default function Footer() {
 
             {/* Newsletter Signup */}
             <div>
-              <h3 className="text-lg font-semibold mb-6">Stay Updated</h3>
+              <h3 className="text-lg text-violet-900 font-semibold mb-6">Stay Updated</h3>
               <p className="text-gray-300 mb-4">
                 Subscribe to our newsletter for the latest courses and updates.
               </p>
@@ -176,7 +177,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             {/* Copyright */}
             <div className="text-gray-400 text-sm">
-              © {currentYear} My Website. All rights reserved.
+              © {currentYear} Excellence University. All rights reserved.
             </div>
 
             {/* Social Links */}
@@ -187,6 +188,8 @@ export default function Footer() {
                   <a
                     key={index}
                     href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-10 h-10 bg-gray-800 hover:bg-violet-600 rounded-full flex items-center justify-center transition-colors duration-300"
                     aria-label={social.label}
                   >

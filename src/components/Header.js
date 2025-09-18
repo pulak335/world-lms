@@ -146,23 +146,18 @@ export default function Header() {
               
               <div className="flex items-center space-x-6">
                 <Link href="/courses" className="flex items-center space-x-1 text-gray-700 hover:text-violet-600 transition-colors">
-                  <BookOpen className="w-4 h-4" />
                   <span>Courses</span>
                 </Link>
                 <Link href="/university" className="flex items-center space-x-1 text-gray-700 hover:text-violet-600 transition-colors">
-                  <Home className="w-4 h-4" />
                   <span>University</span>
                 </Link>
                 <Link href="/university/semester-courses" className="flex items-center space-x-1 text-gray-700 hover:text-violet-600 transition-colors">
-                  <FaGraduationCap className="w-4 h-4" />
                   <span>Semester Courses</span>
                 </Link>
                 <Link href="/instructors" className="flex items-center space-x-1 text-gray-700 hover:text-violet-600 transition-colors">
-                  <Users className="w-4 h-4" />
                   <span>Instructors</span>
                 </Link>
                 <Link href="/blog" className="flex items-center space-x-1 text-gray-700 hover:text-violet-600 transition-colors">
-                  <FileText className="w-4 h-4" />
                   <span>Blog</span>
                 </Link>
               </div>
