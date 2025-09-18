@@ -11,7 +11,11 @@ const initialState = {
   expandedFilters: {
     categories: true,
     level: true,
-    price: true
+    price: true,
+    rating: false,
+    duration: false,
+    language: false,
+    quick: false
   },
   
   // Loading states

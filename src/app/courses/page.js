@@ -1,13 +1,16 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FaSearch, FaChevronDown, FaChevronUp, FaTh, FaList, FaStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaSearch, FaChevronDown, FaChevronUp, FaTh, FaList, FaStar, FaChevronLeft, FaChevronRight, FaCode, FaBriefcase, FaChartLine, FaHeartbeat, FaGraduationCap, FaPalette, FaRobot, FaGamepad, FaMobile, FaLaptopCode, FaDatabase, FaCloud, FaShieldAlt, FaLanguage, FaMusic, FaCamera, FaUtensils, FaPlane, FaHome, FaCar, FaBookOpen } from 'react-icons/fa';
 import { 
   setSearchQuery, 
   setCategory, 
   setLevel, 
   setPrice, 
+  setRating,
+  setDuration,
+  setLanguage,
   setSortBy, 
   setCurrentPage,
   fetchCourses 
@@ -18,11 +21,33 @@ import {
   selectCoursesViewMode, 
   selectExpandedFilters 
 } from '../../store/slices/ui-slice';
-import { addToCart } from '../../store/slices/cart-slice';
+import { addToCart, selectIsInCart } from '../../store/slices/cart-slice';
 import Image from 'next/image';
+
+// Course Card Button Component
+function CourseCardButton({ course, onAddToCart }) {
+  const isInCart = useSelector(selectIsInCart(course.id));
+  
+  return (
+    <button 
+      onClick={() => onAddToCart(course)}
+      className={`w-full py-2 rounded-lg transition-colors font-medium ${
+        isInCart 
+          ? 'bg-green-600 text-white hover:bg-green-700' 
+          : 'bg-violet-600 text-white hover:bg-violet-700'
+      }`}
+    >
+      {isInCart ? 'Added to Cart ✓' : 'Add to Cart'}
+    </button>
+  );
+}
 
 export default function CoursesPage() {
   const dispatch = useDispatch();
+  
+  // Local state for search suggestions
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
   
   // Redux state
   const viewMode = useSelector(selectCoursesViewMode);
@@ -40,37 +65,97 @@ export default function CoursesPage() {
   }, [dispatch, filters]);
 
   const categories = [
-    { name: 'AI', count: 0, subcategories: [] },
     { 
-      name: 'Development', 
-      count: 2, 
-      subcategories: ['Mobile Development', 'Game Development'] 
+      name: 'Programming & Development', 
+      count: 45, 
+      icon: FaCode,
+      subcategories: [
+        { name: 'Web Development', count: 15, icon: FaLaptopCode },
+        { name: 'Mobile Development', count: 12, icon: FaMobile },
+        { name: 'Game Development', count: 8, icon: FaGamepad },
+        { name: 'Database Management', count: 10, icon: FaDatabase }
+      ] 
     },
     { 
-      name: 'Business', 
-      count: 2, 
-      subcategories: ['Management', 'Business Strategy'] 
-    },
-    { name: 'Marketing', count: 0, subcategories: [] },
-    { 
-      name: 'Health & Fitness', 
-      count: 1, 
-      subcategories: ['Nutrition & Diet'] 
-    },
-    { 
-      name: 'Academics', 
-      count: 5, 
-      subcategories: ['Math', 'Science', 'English', 'Social', 'Language'] 
+      name: 'Data Science & AI', 
+      count: 32, 
+      icon: FaRobot,
+      subcategories: [
+        { name: 'Machine Learning', count: 12, icon: FaRobot },
+        { name: 'Data Analysis', count: 10, icon: FaChartLine },
+        { name: 'Cloud Computing', count: 10, icon: FaCloud }
+      ] 
     },
     { 
-      name: 'Lifestyle', 
-      count: 1, 
-      subcategories: ['Beauty & Makeup'] 
+      name: 'Business & Management', 
+      count: 28, 
+      icon: FaBriefcase,
+      subcategories: [
+        { name: 'Project Management', count: 8, icon: FaBriefcase },
+        { name: 'Digital Marketing', count: 10, icon: FaChartLine },
+        { name: 'Entrepreneurship', count: 10, icon: FaChartLine }
+      ] 
+    },
+    { 
+      name: 'Design & Creative', 
+      count: 35, 
+      icon: FaPalette,
+      subcategories: [
+        { name: 'Graphic Design', count: 12, icon: FaPalette },
+        { name: 'UI/UX Design', count: 10, icon: FaPalette },
+        { name: 'Photography', count: 8, icon: FaCamera },
+        { name: 'Music Production', count: 5, icon: FaMusic }
+      ] 
+    },
+    { 
+      name: 'Health & Wellness', 
+      count: 22, 
+      icon: FaHeartbeat,
+      subcategories: [
+        { name: 'Fitness & Nutrition', count: 12, icon: FaHeartbeat },
+        { name: 'Mental Health', count: 5, icon: FaHeartbeat },
+        { name: 'Yoga & Meditation', count: 5, icon: FaHeartbeat }
+      ] 
+    },
+    { 
+      name: 'Academic Subjects', 
+      count: 40, 
+      icon: FaGraduationCap,
+      subcategories: [
+        { name: 'Mathematics', count: 10, icon: FaBookOpen },
+        { name: 'Science', count: 12, icon: FaBookOpen },
+        { name: 'Languages', count: 8, icon: FaLanguage },
+        { name: 'History & Social Studies', count: 10, icon: FaBookOpen }
+      ] 
+    },
+    { 
+      name: 'Technology & IT', 
+      count: 25, 
+      icon: FaShieldAlt,
+      subcategories: [
+        { name: 'Cybersecurity', count: 8, icon: FaShieldAlt },
+        { name: 'Network Administration', count: 7, icon: FaShieldAlt },
+        { name: 'System Administration', count: 10, icon: FaShieldAlt }
+      ] 
+    },
+    { 
+      name: 'Lifestyle & Hobbies', 
+      count: 18, 
+      icon: FaHome,
+      subcategories: [
+        { name: 'Cooking & Culinary', count: 6, icon: FaUtensils },
+        { name: 'Travel & Tourism', count: 4, icon: FaPlane },
+        { name: 'Home Improvement', count: 4, icon: FaHome },
+        { name: 'Automotive', count: 4, icon: FaCar }
+      ] 
     }
   ];
 
   const levels = ['All', 'Beginner', 'Intermediate', 'Advanced'];
-  const prices = ['All', 'Free', 'Paid'];
+  const prices = ['All', 'Free', 'Under $50', '$50 - $100', '$100 - $200', 'Over $200'];
+  const ratings = ['All', '4.5+ Stars', '4.0+ Stars', '3.5+ Stars', '3.0+ Stars'];
+  const durations = ['All', 'Under 20 lessons', '20-30 lessons', '30-40 lessons', '40+ lessons'];
+  const languages = ['All', 'English', 'Spanish', 'French', 'German', 'Chinese'];
 
   // Pagination
   const startIndex = (pagination.currentPage - 1) * pagination.coursesPerPage;
@@ -88,6 +173,43 @@ export default function CoursesPage() {
 
   const handleAddToCart = (course) => {
     dispatch(addToCart(course));
+  };
+
+  // Search suggestions logic
+  const generateSuggestions = (query) => {
+    if (query.length < 2) return [];
+    
+    const allCourses = courses;
+    const courseTitles = allCourses.map(course => course.title.toLowerCase());
+    const instructorNames = allCourses.map(course => course.instructor.toLowerCase());
+    const categories = allCourses.map(course => course.category.toLowerCase());
+    
+    const allSuggestions = [...courseTitles, ...instructorNames, ...categories];
+    const uniqueSuggestions = [...new Set(allSuggestions)];
+    
+    return uniqueSuggestions
+      .filter(suggestion => suggestion.includes(query.toLowerCase()))
+      .slice(0, 5)
+      .map(suggestion => suggestion.charAt(0).toUpperCase() + suggestion.slice(1));
+  };
+
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    dispatch(setSearchQuery(query));
+    
+    if (query.length >= 2) {
+      const newSuggestions = generateSuggestions(query);
+      setSuggestions(newSuggestions);
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+      setSuggestions([]);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    dispatch(setSearchQuery(suggestion));
+    setShowSuggestions(false);
   };
 
   const renderStars = (rating) => {
@@ -143,12 +265,36 @@ export default function CoursesPage() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search our courses"
+                  placeholder="Search courses, instructors, or categories..."
                   value={filters.search}
-                  onChange={(e) => dispatch(setSearchQuery(e.target.value))}
+                  onChange={handleSearchChange}
+                  onFocus={() => {
+                    if (filters.search.length >= 2) {
+                      setShowSuggestions(true);
+                    }
+                  }}
+                  onBlur={() => {
+                    // Delay hiding suggestions to allow clicking on them
+                    setTimeout(() => setShowSuggestions(false), 200);
+                  }}
                   className="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
                 />
                 <FaSearch className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                
+                {/* Search Suggestions Dropdown */}
+                {showSuggestions && suggestions.length > 0 && (
+                  <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                    {suggestions.map((suggestion, index) => (
+                      <div
+                        key={index}
+                        className="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-violet-50 hover:text-violet-900"
+                        onClick={() => handleSuggestionClick(suggestion)}
+                      >
+                        <span className="font-normal block truncate">{suggestion}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               
               <div className="relative">
@@ -173,10 +319,89 @@ export default function CoursesPage() {
           </div>
         </div>
 
+        {/* Filter Results Summary */}
+        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center space-x-4">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {courses.length} Course{courses.length !== 1 ? 's' : ''} Found
+              </h2>
+              {filters.search && (
+                <span className="text-sm text-gray-600">
+                  for "{filters.search}"
+                </span>
+              )}
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              {/* View Mode Toggle */}
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => dispatch(setCoursesViewMode('grid'))}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === 'grid' 
+                      ? 'bg-violet-100 text-violet-600' 
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <FaTh className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => dispatch(setCoursesViewMode('list'))}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === 'list' 
+                      ? 'bg-violet-100 text-violet-600' 
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <FaList className="w-4 h-4" />
+                </button>
+              </div>
+              
+              {/* Sort Options */}
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Sort by:</span>
+                <select
+                  value={filters.sortBy}
+                  onChange={(e) => dispatch(setSortBy(e.target.value))}
+                  className="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                >
+                  <option value="newly-published">Newest First</option>
+                  <option value="oldest-published">Oldest First</option>
+                  <option value="price-low-high">Price: Low to High</option>
+                  <option value="price-high-low">Price: High to Low</option>
+                  <option value="rating-high-low">Rating: High to Low</option>
+                  <option value="rating-low-high">Rating: Low to High</option>
+                  <option value="title-a-z">Title: A to Z</option>
+                  <option value="title-z-a">Title: Z to A</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left Sidebar - Filters */}
           <div className="lg:w-1/4">
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
+              {/* Filter Header */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
+                <button
+                  onClick={() => {
+                    dispatch(setCategory(''));
+                    dispatch(setLevel(''));
+                    dispatch(setPrice(''));
+                    dispatch(setRating(''));
+                    dispatch(setDuration(''));
+                    dispatch(setLanguage(''));
+                    dispatch(setSearchQuery(''));
+                  }}
+                  className="text-sm text-violet-600 hover:text-violet-700 font-medium"
+                >
+                  Clear All
+                </button>
+              </div>
               {/* Categories Filter */}
               <div className="mb-6">
                 <button
@@ -192,40 +417,81 @@ export default function CoursesPage() {
                 </button>
                 
                 {expandedFilters.categories && (
-                  <div className="space-y-2">
-                    {categories.map((category, index) => (
-                      <div key={index}>
-                        <label className="flex items-center space-x-3 cursor-pointer">
-                          <input
-                            type="radio"
-                            name="category"
-                            value={category.name}
-                            checked={filters.category === category.name}
-                            onChange={(e) => dispatch(setCategory(e.target.value))}
-                            className="w-4 h-4 text-violet-600 border-gray-300 focus:ring-violet-500"
-                          />
-                          <span className="text-gray-700">{category.name} ({category.count})</span>
-                        </label>
-                        
-                        {category.subcategories.length > 0 && (
-                          <div className="ml-6 mt-2 space-y-2">
-                            {category.subcategories.map((subcategory, subIndex) => (
-                              <label key={subIndex} className="flex items-center space-x-3 cursor-pointer">
-                                <input
-                                  type="radio"
-                                  name="category"
-                                  value={subcategory}
-                                  checked={filters.category === subcategory}
-                                  onChange={(e) => dispatch(setCategory(e.target.value))}
-                                  className="w-4 h-4 text-violet-600 border-gray-300 focus:ring-violet-500"
-                                />
-                                <span className="text-gray-600 text-sm">{subcategory}</span>
-                              </label>
-                            ))}
+                  <div className="space-y-3">
+                    {/* Show All Categories Option */}
+                    <div className="border border-gray-200 rounded-lg p-3 hover:border-violet-300 transition-colors">
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="category"
+                          value=""
+                          checked={!filters.category}
+                          onChange={(e) => dispatch(setCategory(e.target.value))}
+                          className="w-4 h-4 text-violet-600 border-gray-300 focus:ring-violet-500"
+                        />
+                        <div className="flex items-center space-x-3 flex-1">
+                          <div className="w-8 h-8 bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg flex items-center justify-center">
+                            <FaTh className="w-4 h-4 text-white" />
                           </div>
-                        )}
-                      </div>
-                    ))}
+                          <div className="flex-1">
+                            <span className="text-gray-900 font-medium">All Categories</span>
+                            <span className="text-gray-500 text-sm ml-2">({categories.reduce((sum, cat) => sum + cat.count, 0)} courses)</span>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    
+                    {categories.map((category, index) => {
+                      const IconComponent = category.icon;
+                      return (
+                        <div key={index} className="border border-gray-200 rounded-lg p-3 hover:border-violet-300 transition-colors">
+                          <label className="flex items-center space-x-3 cursor-pointer">
+                            <input
+                              type="radio"
+                              name="category"
+                              value={category.name}
+                              checked={filters.category === category.name}
+                              onChange={(e) => dispatch(setCategory(e.target.value))}
+                              className="w-4 h-4 text-violet-600 border-gray-300 focus:ring-violet-500"
+                            />
+                            <div className="flex items-center space-x-3 flex-1">
+                              <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <IconComponent className="w-4 h-4 text-white" />
+                              </div>
+                              <div className="flex-1">
+                                <span className="text-gray-900 font-medium">{category.name}</span>
+                                <span className="text-gray-500 text-sm ml-2">({category.count} courses)</span>
+                              </div>
+                            </div>
+                          </label>
+                          
+                          {category.subcategories.length > 0 && (
+                            <div className="ml-11 mt-3 space-y-2">
+                              {category.subcategories.map((subcategory, subIndex) => {
+                                const SubIconComponent = subcategory.icon;
+                                return (
+                                  <label key={subIndex} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded-md transition-colors">
+                                    <input
+                                      type="radio"
+                                      name="category"
+                                      value={subcategory.name}
+                                      checked={filters.category === subcategory.name}
+                                      onChange={(e) => dispatch(setCategory(e.target.value))}
+                                      className="w-4 h-4 text-violet-600 border-gray-300 focus:ring-violet-500"
+                                    />
+                                    <div className="flex items-center space-x-2">
+                                      <SubIconComponent className="w-4 h-4 text-gray-500" />
+                                      <span className="text-gray-600 text-sm">{subcategory.name}</span>
+                                      <span className="text-gray-400 text-xs">({subcategory.count})</span>
+                                    </div>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -295,6 +561,256 @@ export default function CoursesPage() {
                   </div>
                 )}
               </div>
+
+              {/* Rating Filter */}
+              <div className="mb-6">
+                <button
+                  onClick={() => toggleFilter('rating')}
+                  className="flex items-center justify-between w-full text-left font-semibold text-gray-900 mb-4"
+                >
+                  <span>Rating</span>
+                  {expandedFilters.rating ? (
+                    <FaChevronUp className="w-4 h-4 text-gray-500" />
+                  ) : (
+                    <FaChevronDown className="w-4 h-4 text-gray-500" />
+                  )}
+                </button>
+                
+                {expandedFilters.rating && (
+                  <div className="space-y-2">
+                    {ratings.map((rating, index) => (
+                      <label key={index} className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="rating"
+                          value={rating.toLowerCase()}
+                          checked={filters.rating === rating.toLowerCase()}
+                          onChange={(e) => dispatch(setRating(e.target.value))}
+                          className="w-4 h-4 text-violet-600 border-gray-300 focus:ring-violet-500"
+                        />
+                        <span className="text-gray-700">{rating}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Duration Filter */}
+              <div className="mb-6">
+                <button
+                  onClick={() => toggleFilter('duration')}
+                  className="flex items-center justify-between w-full text-left font-semibold text-gray-900 mb-4"
+                >
+                  <span>Duration</span>
+                  {expandedFilters.duration ? (
+                    <FaChevronUp className="w-4 h-4 text-gray-500" />
+                  ) : (
+                    <FaChevronDown className="w-4 h-4 text-gray-500" />
+                  )}
+                </button>
+                
+                {expandedFilters.duration && (
+                  <div className="space-y-2">
+                    {durations.map((duration, index) => (
+                      <label key={index} className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="duration"
+                          value={duration.toLowerCase()}
+                          checked={filters.duration === duration.toLowerCase()}
+                          onChange={(e) => dispatch(setDuration(e.target.value))}
+                          className="w-4 h-4 text-violet-600 border-gray-300 focus:ring-violet-500"
+                        />
+                        <span className="text-gray-700">{duration}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Language Filter */}
+              <div className="mb-6">
+                <button
+                  onClick={() => toggleFilter('language')}
+                  className="flex items-center justify-between w-full text-left font-semibold text-gray-900 mb-4"
+                >
+                  <span>Language</span>
+                  {expandedFilters.language ? (
+                    <FaChevronUp className="w-4 h-4 text-gray-500" />
+                  ) : (
+                    <FaChevronDown className="w-4 h-4 text-gray-500" />
+                  )}
+                </button>
+                
+                {expandedFilters.language && (
+                  <div className="space-y-2">
+                    {languages.map((language, index) => (
+                      <label key={index} className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="language"
+                          value={language.toLowerCase()}
+                          checked={filters.language === language.toLowerCase()}
+                          onChange={(e) => dispatch(setLanguage(e.target.value))}
+                          className="w-4 h-4 text-violet-600 border-gray-300 focus:ring-violet-500"
+                        />
+                        <span className="text-gray-700">{language}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Quick Filters */}
+              <div className="mb-6">
+                <button
+                  onClick={() => toggleFilter('quick')}
+                  className="flex items-center justify-between w-full text-left font-semibold text-gray-900 mb-4"
+                >
+                  <span>Quick Filters</span>
+                  {expandedFilters.quick ? (
+                    <FaChevronUp className="w-4 h-4 text-gray-500" />
+                  ) : (
+                    <FaChevronDown className="w-4 h-4 text-gray-500" />
+                  )}
+                </button>
+                
+                {expandedFilters.quick && (
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => {
+                        dispatch(setPrice('free'));
+                        dispatch(setLevel('beginner'));
+                      }}
+                      className="w-full text-left px-3 py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-sm"
+                    >
+                      🆓 Free Beginner Courses
+                    </button>
+                    <button
+                      onClick={() => {
+                        dispatch(setRating('4.5+ stars'));
+                        dispatch(setLevel('intermediate'));
+                      }}
+                      className="w-full text-left px-3 py-2 bg-yellow-50 text-yellow-700 rounded-lg hover:bg-yellow-100 transition-colors text-sm"
+                    >
+                      ⭐ Highly Rated Intermediate
+                    </button>
+                    <button
+                      onClick={() => {
+                        dispatch(setDuration('under 20 lessons'));
+                        dispatch(setLevel('beginner'));
+                      }}
+                      className="w-full text-left px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm"
+                    >
+                      ⏱️ Quick Beginner Courses
+                    </button>
+                    <button
+                      onClick={() => {
+                        dispatch(setPrice('under $50'));
+                        dispatch(setRating('4.0+ stars'));
+                      }}
+                      className="w-full text-left px-3 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors text-sm"
+                    >
+                      💰 Affordable & Well-Rated
+                    </button>
+                    <button
+                      onClick={() => {
+                        dispatch(setCategory('programming & development'));
+                        dispatch(setLevel('advanced'));
+                      }}
+                      className="w-full text-left px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors text-sm"
+                    >
+                      💻 Advanced Programming
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Active Filters Summary */}
+              {(filters.category || filters.level || filters.price || filters.rating || filters.duration || filters.language || filters.search) && (
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-3">Active Filters</h4>
+                  <div className="space-y-2">
+                    {filters.search && (
+                      <div className="flex items-center justify-between bg-violet-50 px-3 py-2 rounded-lg">
+                        <span className="text-sm text-violet-700">Search: "{filters.search}"</span>
+                        <button
+                          onClick={() => dispatch(setSearchQuery(''))}
+                          className="text-violet-600 hover:text-violet-800"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
+                    {filters.category && (
+                      <div className="flex items-center justify-between bg-violet-50 px-3 py-2 rounded-lg">
+                        <span className="text-sm text-violet-700">Category: {filters.category}</span>
+                        <button
+                          onClick={() => dispatch(setCategory(''))}
+                          className="text-violet-600 hover:text-violet-800"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
+                    {filters.level && (
+                      <div className="flex items-center justify-between bg-violet-50 px-3 py-2 rounded-lg">
+                        <span className="text-sm text-violet-700">Level: {filters.level}</span>
+                        <button
+                          onClick={() => dispatch(setLevel(''))}
+                          className="text-violet-600 hover:text-violet-800"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
+                    {filters.price && (
+                      <div className="flex items-center justify-between bg-violet-50 px-3 py-2 rounded-lg">
+                        <span className="text-sm text-violet-700">Price: {filters.price}</span>
+                        <button
+                          onClick={() => dispatch(setPrice(''))}
+                          className="text-violet-600 hover:text-violet-800"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
+                    {filters.rating && (
+                      <div className="flex items-center justify-between bg-violet-50 px-3 py-2 rounded-lg">
+                        <span className="text-sm text-violet-700">Rating: {filters.rating}</span>
+                        <button
+                          onClick={() => dispatch(setRating(''))}
+                          className="text-violet-600 hover:text-violet-800"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
+                    {filters.duration && (
+                      <div className="flex items-center justify-between bg-violet-50 px-3 py-2 rounded-lg">
+                        <span className="text-sm text-violet-700">Duration: {filters.duration}</span>
+                        <button
+                          onClick={() => dispatch(setDuration(''))}
+                          className="text-violet-600 hover:text-violet-800"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
+                    {filters.language && (
+                      <div className="flex items-center justify-between bg-violet-50 px-3 py-2 rounded-lg">
+                        <span className="text-sm text-violet-700">Language: {filters.language}</span>
+                        <button
+                          onClick={() => dispatch(setLanguage(''))}
+                          className="text-violet-600 hover:text-violet-800"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -369,13 +885,8 @@ export default function CoursesPage() {
                       </div>
                     </div>
 
-                    {/* Learn More Button */}
-                    <button 
-                      onClick={() => handleAddToCart(course)}
-                      className="w-full py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors font-medium"
-                    >
-                      Learn More
-                    </button>
+                    {/* Add to Cart / View Details Button */}
+                    <CourseCardButton course={course} onAddToCart={handleAddToCart} />
                   </div>
                 </div>
               ))}

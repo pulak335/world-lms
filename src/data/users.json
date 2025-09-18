@@ -1,0 +1,180 @@
+{
+  "students": [
+    {
+      "id": 1,
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "student@demo.com",
+      "password": "password123",
+      "phone": "+1234567890",
+      "role": "student",
+      "avatar": "/api/placeholder/100/100",
+      "enrolledCourses": [1, 2, 3],
+      "completedCourses": [1],
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "profile": {
+        "bio": "Passionate about web development and learning new technologies.",
+        "interests": ["Web Development", "JavaScript", "React"],
+        "location": "New York, USA",
+        "website": "https://johndoe.dev"
+      },
+      "stats": {
+        "totalCourses": 3,
+        "completedCourses": 1,
+        "avgQuizScore": 85,
+        "totalStudyHours": 120
+      }
+    },
+    {
+      "id": 2,
+      "firstName": "Sarah",
+      "lastName": "Wilson",
+      "email": "sarah.wilson@demo.com",
+      "password": "password123",
+      "phone": "+1234567891",
+      "role": "student",
+      "avatar": "/api/placeholder/100/100",
+      "enrolledCourses": [2, 4, 5],
+      "completedCourses": [2],
+      "createdAt": "2024-01-02T00:00:00.000Z",
+      "profile": {
+        "bio": "Data science enthusiast with a passion for machine learning.",
+        "interests": ["Data Science", "Machine Learning", "Python"],
+        "location": "San Francisco, USA",
+        "website": "https://sarahwilson.dev"
+      },
+      "stats": {
+        "totalCourses": 3,
+        "completedCourses": 1,
+        "avgQuizScore": 92,
+        "totalStudyHours": 95
+      }
+    },
+    {
+      "id": 3,
+      "firstName": "Mike",
+      "lastName": "Johnson",
+      "email": "mike.johnson@demo.com",
+      "password": "password123",
+      "phone": "+1234567892",
+      "role": "student",
+      "avatar": "/api/placeholder/100/100",
+      "enrolledCourses": [1, 3, 6],
+      "completedCourses": [1, 3],
+      "createdAt": "2024-01-03T00:00:00.000Z",
+      "profile": {
+        "bio": "Digital marketing professional looking to expand technical skills.",
+        "interests": ["Digital Marketing", "SEO", "Analytics"],
+        "location": "Chicago, USA",
+        "website": "https://mikejohnson.dev"
+      },
+      "stats": {
+        "totalCourses": 3,
+        "completedCourses": 2,
+        "avgQuizScore": 78,
+        "totalStudyHours": 150
+      }
+    }
+  ],
+  "instructors": [
+    {
+      "id": 4,
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "email": "instructor@demo.com",
+      "password": "password123",
+      "phone": "+1234567893",
+      "role": "instructor",
+      "avatar": "/api/placeholder/100/100",
+      "courses": [1, 2, 3],
+      "students": 45,
+      "rating": 4.8,
+      "createdAt": "2023-12-01T00:00:00.000Z",
+      "profile": {
+        "bio": "Senior Full-Stack Developer with 10+ years of experience in web development.",
+        "specialization": "Web Development, JavaScript, React, Node.js",
+        "location": "Seattle, USA",
+        "website": "https://janesmith.dev",
+        "linkedin": "https://linkedin.com/in/janesmith",
+        "github": "https://github.com/janesmith"
+      },
+      "stats": {
+        "totalCourses": 3,
+        "totalStudents": 45,
+        "avgRating": 4.8,
+        "totalRevenue": 12500
+      },
+      "qualifications": [
+        "Master's in Computer Science",
+        "AWS Certified Developer",
+        "React Certified Professional"
+      ]
+    },
+    {
+      "id": 5,
+      "firstName": "Dr. Michael",
+      "lastName": "Chen",
+      "email": "michael.chen@demo.com",
+      "password": "password123",
+      "phone": "+1234567894",
+      "role": "instructor",
+      "avatar": "/api/placeholder/100/100",
+      "courses": [2, 4, 5],
+      "students": 32,
+      "rating": 4.9,
+      "createdAt": "2023-11-15T00:00:00.000Z",
+      "profile": {
+        "bio": "Data Scientist and Machine Learning Engineer with PhD in Artificial Intelligence.",
+        "specialization": "Machine Learning, Data Science, Python, TensorFlow",
+        "location": "Boston, USA",
+        "website": "https://michaelchen.dev",
+        "linkedin": "https://linkedin.com/in/michaelchen",
+        "github": "https://github.com/michaelchen"
+      },
+      "stats": {
+        "totalCourses": 3,
+        "totalStudents": 32,
+        "avgRating": 4.9,
+        "totalRevenue": 8900
+      },
+      "qualifications": [
+        "PhD in Artificial Intelligence",
+        "Google Cloud ML Engineer",
+        "TensorFlow Developer Certificate"
+      ]
+    },
+    {
+      "id": 6,
+      "firstName": "Emily",
+      "lastName": "Rodriguez",
+      "email": "emily.rodriguez@demo.com",
+      "password": "password123",
+      "phone": "+1234567895",
+      "role": "instructor",
+      "avatar": "/api/placeholder/100/100",
+      "courses": [3, 6, 7],
+      "students": 28,
+      "rating": 4.7,
+      "createdAt": "2023-10-20T00:00:00.000Z",
+      "profile": {
+        "bio": "Digital Marketing Expert with 8+ years of experience in growth marketing.",
+        "specialization": "Digital Marketing, SEO, Social Media, Analytics",
+        "location": "Los Angeles, USA",
+        "website": "https://emilyrodriguez.dev",
+        "linkedin": "https://linkedin.com/in/emilyrodriguez",
+        "twitter": "https://twitter.com/emilyrodriguez"
+      },
+      "stats": {
+        "totalCourses": 3,
+        "totalStudents": 28,
+        "avgRating": 4.7,
+        "totalRevenue": 5600
+      },
+      "qualifications": [
+        "MBA in Marketing",
+        "Google Analytics Certified",
+        "HubSpot Content Marketing Certified"
+      ]
+    }
+  ]
+}

@@ -4,7 +4,14 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: ['localhost', 'images.unsplash.com'],
+    domains: [
+      'localhost', 
+      'images.unsplash.com',
+      'upload.wikimedia.org',
+      'iub.ac.bd',
+      'play-lh.googleusercontent.com',
+      'opshori.wordpress.com'
+    ],
   },
 }
 

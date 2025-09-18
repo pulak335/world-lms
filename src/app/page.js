@@ -10,11 +10,13 @@ import StudentStories from '../components/StudentStories';
 import UniversityCourses from '../components/UniversityCourses';
 import SemesterSelection from '../components/SemesterSelection';
 import OTHMBanner from '../components/OTHMBanner';
+import UniversityLogos from '../components/UniversityLogos';
 
 export default function Home() {
   return (
     <main className="min-h-screen">
       <Hero />
+      <UniversityLogos />
       <PromoSection />
       <SemesterSelection />
       <UniversityCourses />

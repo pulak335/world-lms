@@ -1,77 +1,113 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import usersData from '../../data/users.json'
 
 // Async thunks for API calls
-export const loginUser = createAsyncThunk(
-  'auth/loginUser',
+export const login = createAsyncThunk(
+  'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      // Replace with your actual API call
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      })
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      if (!response.ok) {
-        throw new Error('Login failed')
+      const { email, password, role } = credentials;
+      
+      // Find user in JSON data
+      let user = null;
+      if (role === 'student') {
+        user = usersData.students.find(u => u.email === email && u.password === password);
+      } else if (role === 'instructor') {
+        user = usersData.instructors.find(u => u.email === email && u.password === password);
       }
       
-      const data = await response.json()
-      return data
+      if (user) {
+        // Remove password from user object before returning
+        const { password: _, ...userWithoutPassword } = user;
+        return {
+          success: true,
+          user: userWithoutPassword,
+          token: `mock-jwt-token-${role}-${Date.now()}`
+        };
+      } else {
+        throw new Error('Invalid credentials');
+      }
     } catch (error) {
-      // Return mock data for development
-      const mockUser = {
-        user: {
-          id: 1,
-          name: 'John Doe',
-          email: credentials.email,
-          avatar: '/api/placeholder/100/100',
-          role: 'student',
-          enrolledCourses: [],
-          completedCourses: []
-        },
-        token: 'mock-jwt-token-' + Date.now()
-      };
-      return mockUser;
+      return rejectWithValue(error.message);
     }
   }
 )
 
-export const registerUser = createAsyncThunk(
-  'auth/registerUser',
+export const register = createAsyncThunk(
+  'auth/register',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      })
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      if (!response.ok) {
-        throw new Error('Registration failed')
+      const { firstName, lastName, email, phone, password, role } = userData;
+      
+      // Check if user already exists
+      const existingUser = role === 'student' 
+        ? usersData.students.find(u => u.email === email)
+        : usersData.instructors.find(u => u.email === email);
+      
+      if (existingUser) {
+        throw new Error('User already exists with this email');
       }
       
-      const data = await response.json()
-      return data
-    } catch (error) {
-      // Return mock data for development
-      const mockUser = {
-        user: {
-          id: Date.now(),
-          name: userData.name,
-          email: userData.email,
-          avatar: '/api/placeholder/100/100',
-          role: 'student',
+      // Create new user
+      const newUser = {
+        id: Date.now(),
+        firstName,
+        lastName,
+        email,
+        phone,
+        role,
+        avatar: '/api/placeholder/100/100',
+        createdAt: new Date().toISOString(),
+        ...(role === 'student' ? {
           enrolledCourses: [],
-          completedCourses: []
-        },
-        token: 'mock-jwt-token-' + Date.now()
+          completedCourses: [],
+          profile: {
+            bio: '',
+            interests: [],
+            location: '',
+            website: ''
+          },
+          stats: {
+            totalCourses: 0,
+            completedCourses: 0,
+            avgQuizScore: 0,
+            totalStudyHours: 0
+          }
+        } : {
+          courses: [],
+          students: 0,
+          rating: 0,
+          profile: {
+            bio: '',
+            specialization: '',
+            location: '',
+            website: '',
+            linkedin: '',
+            github: ''
+          },
+          stats: {
+            totalCourses: 0,
+            totalStudents: 0,
+            avgRating: 0,
+            totalRevenue: 0
+          },
+          qualifications: []
+        })
       };
-      return mockUser;
+      
+      return {
+        success: true,
+        user: newUser,
+        token: `mock-jwt-token-${role}-${Date.now()}`
+      };
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
   }
 )
@@ -104,18 +140,22 @@ const initialState = {
   user: null,
   token: null,
   isAuthenticated: false,
-  isLoading: false,
+  loading: false,
   error: null,
+  userRole: null, // 'student' or 'instructor'
   loginForm: {
     email: '',
     password: '',
     rememberMe: false
   },
   registerForm: {
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
+    phone: '',
     password: '',
     confirmPassword: '',
+    role: 'student',
     agreeToTerms: false
   }
 }
@@ -128,6 +168,7 @@ const authSlice = createSlice({
       state.user = null
       state.token = null
       state.isAuthenticated = false
+      state.userRole = null
       state.error = null
     },
     clearError: (state) => {
@@ -148,68 +189,76 @@ const authSlice = createSlice({
     },
     resetRegisterForm: (state) => {
       state.registerForm = {
-        name: '',
+        firstName: '',
+        lastName: '',
         email: '',
+        phone: '',
         password: '',
         confirmPassword: '',
+        role: 'student',
         agreeToTerms: false
       }
     },
     setUser: (state, action) => {
       state.user = action.payload
       state.isAuthenticated = true
+      state.userRole = action.payload.role
     }
   },
   extraReducers: (builder) => {
     builder
       // Login
-      .addCase(loginUser.pending, (state) => {
-        state.isLoading = true
+      .addCase(login.pending, (state) => {
+        state.loading = true
         state.error = null
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.isLoading = false
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false
         state.user = action.payload.user
         state.token = action.payload.token
         state.isAuthenticated = true
+        state.userRole = action.payload.user.role
         state.error = null
       })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.isLoading = false
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false
         state.error = action.payload
         state.isAuthenticated = false
+        state.userRole = null
       })
       
       // Register
-      .addCase(registerUser.pending, (state) => {
-        state.isLoading = true
+      .addCase(register.pending, (state) => {
+        state.loading = true
         state.error = null
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.isLoading = false
+      .addCase(register.fulfilled, (state, action) => {
+        state.loading = false
         state.user = action.payload.user
         state.token = action.payload.token
         state.isAuthenticated = true
+        state.userRole = action.payload.user.role
         state.error = null
       })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.isLoading = false
+      .addCase(register.rejected, (state, action) => {
+        state.loading = false
         state.error = action.payload
         state.isAuthenticated = false
+        state.userRole = null
       })
       
       // Update Profile
       .addCase(updateProfile.pending, (state) => {
-        state.isLoading = true
+        state.loading = true
         state.error = null
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
-        state.isLoading = false
+        state.loading = false
         state.user = { ...state.user, ...action.payload }
         state.error = null
       })
       .addCase(updateProfile.rejected, (state, action) => {
-        state.isLoading = false
+        state.loading = false
         state.error = action.payload
       })
   },
@@ -229,8 +278,9 @@ export const {
 export const selectUser = (state) => state.auth.user
 export const selectToken = (state) => state.auth.token
 export const selectIsAuthenticated = (state) => state.auth.isAuthenticated
-export const selectIsLoading = (state) => state.auth.isLoading
+export const selectLoading = (state) => state.auth.loading
 export const selectError = (state) => state.auth.error
+export const selectUserRole = (state) => state.auth.userRole
 export const selectLoginForm = (state) => state.auth.loginForm
 export const selectRegisterForm = (state) => state.auth.registerForm
 
